@@ -1,0 +1,23 @@
+{
+    "name": "pingoswoole/easyadmincmd",
+    "description": "EasyadminCmd for tpadmin ",
+    "homepage": "http://www.github.com/pingoswoole/",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "pingo",
+            "homepage": "http://www.github.com/pingoswoole/"
+        }
+    ],
+    "require": {
+        "php":">=7.2"
+    },
+    "require-dev" : {
+         
+    },
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {"EasyAdminCmd\\": "src"}
+    }
+}
