@@ -4,7 +4,7 @@
 
 namespace EasyAdminCmd\upload\driver\alioss;
 
-use EasyAdmin\upload\interfaces\OssDriver;
+use EasyAdminCmd\upload\interfaces\OssDriver;
 use OSS\Core\OssException;
 use OSS\OssClient;
 

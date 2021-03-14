@@ -4,14 +4,14 @@
 
 namespace EasyAdminCmd\upload\driver;
 
-use EasyAdmin\upload\FileBase;
-use EasyAdmin\upload\driver\qnoss\Oss;
-use EasyAdmin\upload\trigger\SaveDb;
+use EasyAdminCmd\upload\FileBase;
+use EasyAdminCmd\upload\driver\qnoss\Oss;
+use EasyAdminCmd\upload\trigger\SaveDb;
 
 /**
  * 七牛云上传
  * Class Qnoss
- * @package EasyAdmin\upload\driver
+ * @package EasyAdminCmd\upload\driver
  */
 class Qnoss extends FileBase
 {

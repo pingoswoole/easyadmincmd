@@ -7,14 +7,14 @@ namespace EasyAdminCmd\auth;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\FileCacheReader;
-use EasyAdmin\annotation\ControllerAnnotation;
-use EasyAdmin\annotation\NodeAnotation;
-use EasyAdmin\tool\CommonTool;
+use EasyAdminCmd\annotation\ControllerAnnotation;
+use EasyAdminCmd\annotation\NodeAnotation;
+use EasyAdminCmd\tool\CommonTool;
 
 /**
  * 节点处理类
  * Class Node
- * @package EasyAdmin\auth
+ * @package EasyAdminCmd\auth
  */
 class Node
 {

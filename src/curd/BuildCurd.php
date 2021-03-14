@@ -3,15 +3,15 @@
 
 namespace EasyAdminCmd\curd;
 
-use EasyAdmin\curd\exceptions\TableException;
-use EasyAdmin\tool\CommonTool;
+use EasyAdminCmd\curd\exceptions\TableException;
+use EasyAdminCmd\tool\CommonTool;
 use think\exception\FileException;
 use think\facade\Db;
 
 /**
  * 快速构建系统CURD
  * Class BuildCurd
- * @package EasyAdmin\curd
+ * @package EasyAdminCmd\curd
  */
 class BuildCurd
 {

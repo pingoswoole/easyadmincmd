@@ -11,7 +11,7 @@ use think\File;
 /**
  * 基类
  * Class Base
- * @package EasyAdmin\upload
+ * @package EasyAdminCmd\upload
  */
 class FileBase
 {

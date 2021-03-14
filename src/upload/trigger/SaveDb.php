@@ -10,7 +10,7 @@ use think\facade\Db;
 /**
  * 保存到数据库
  * Class SaveDb
- * @package EasyAdmin\upload\trigger
+ * @package EasyAdminCmd\upload\trigger
  */
 class SaveDb
 {

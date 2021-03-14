@@ -4,14 +4,14 @@
 
 namespace EasyAdminCmd\upload\driver;
 
-use EasyAdmin\upload\FileBase;
-use EasyAdmin\upload\driver\alioss\Oss;
-use EasyAdmin\upload\trigger\SaveDb;
+use EasyAdminCmd\upload\FileBase;
+use EasyAdminCmd\upload\driver\alioss\Oss;
+use EasyAdminCmd\upload\trigger\SaveDb;
 
 /**
  * 阿里云上传
  * Class Alioss
- * @package EasyAdmin\upload\driver
+ * @package EasyAdminCmd\upload\driver
  */
 class Alioss extends FileBase
 {

@@ -4,13 +4,13 @@
 
 namespace EasyAdminCmd\upload\driver;
 
-use EasyAdmin\upload\FileBase;
-use EasyAdmin\upload\trigger\SaveDb;
+use EasyAdminCmd\upload\FileBase;
+use EasyAdminCmd\upload\trigger\SaveDb;
 
 /**
  * 本地上传
  * Class Local
- * @package EasyAdmin\upload\driver
+ * @package EasyAdminCmd\upload\driver
  */
 class Local extends FileBase
 {

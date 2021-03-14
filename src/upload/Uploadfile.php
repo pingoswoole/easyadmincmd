@@ -4,16 +4,16 @@
 
 namespace EasyAdminCmd\upload;
 
-use EasyAdmin\upload\driver\Alioss;
-use EasyAdmin\upload\driver\Local;
-use EasyAdmin\upload\driver\Qnoss;
-use EasyAdmin\upload\driver\Txcos;
+use EasyAdminCmd\upload\driver\Alioss;
+use EasyAdminCmd\upload\driver\Local;
+use EasyAdminCmd\upload\driver\Qnoss;
+use EasyAdminCmd\upload\driver\Txcos;
 use think\File;
 
 /**
  * 上传组件
  * Class Uploadfile
- * @package EasyAdmin\upload
+ * @package EasyAdminCmd\upload
  */
 class Uploadfile
 {

@@ -4,14 +4,14 @@
 
 namespace EasyAdminCmd\upload\driver;
 
-use EasyAdmin\upload\FileBase;
-use EasyAdmin\upload\driver\txcos\Cos;
-use EasyAdmin\upload\trigger\SaveDb;
+use EasyAdminCmd\upload\FileBase;
+use EasyAdminCmd\upload\driver\txcos\Cos;
+use EasyAdminCmd\upload\trigger\SaveDb;
 
 /**
  * 腾讯云上传
  * Class Txcos
- * @package EasyAdmin\upload\driver
+ * @package EasyAdminCmd\upload\driver
  */
 class Txcos extends FileBase
 {

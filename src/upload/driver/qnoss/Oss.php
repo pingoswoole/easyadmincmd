@@ -5,7 +5,7 @@
 namespace EasyAdminCmd\upload\driver\qnoss;
 
 
-use EasyAdmin\upload\interfaces\OssDriver;
+use EasyAdminCmd\upload\interfaces\OssDriver;
 use Qiniu\Auth;
 use Qiniu\Storage\UploadManager;
 
