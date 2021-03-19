@@ -138,6 +138,12 @@ class BuildCurd
     protected $modelName;
 
     /**
+     * 逻辑处理类名
+     *
+     * @var string
+     */
+    protected $logicFilename;
+    /**
      * 复选框字段后缀
      * @var array
      */
@@ -254,7 +260,6 @@ class BuildCurd
             // 获取表列注释
             $colums = Db::query("SHOW FULL COLUMNS FROM {$this->tablePrefix}{$this->table}");
             foreach ($colums as $vo) {
-
                 $colum = [
                     'type'     => $vo['Type'],
                     'comment'  => !empty($vo['Comment']) ? $vo['Comment'] : $vo['Field'],
@@ -270,7 +275,6 @@ class BuildCurd
                 if ($vo['Field'] == 'delete_time') {
                     $this->delete = true;
                 }
-
             }
 
             // 获取表名注释
@@ -390,6 +394,12 @@ class BuildCurd
         return $this;
     }
 
+    public function setLogicFilename($logicFilename)
+    {
+        $this->logicFilename = str_replace('/', $this->DS, $logicFilename);
+        $this->buildViewJsUrl();
+        return $this;
+    }
     /**
      * 设置模型名
      * @param $modelFilename
@@ -585,7 +595,11 @@ class BuildCurd
         $this->controllerName = array_pop($namespaceArray);
         $namespaceSuffix = implode('\\', $namespaceArray);
         $this->controllerNamespace = empty($namespaceSuffix) ? "app\admin\controller" : "app\admin\controller\\{$namespaceSuffix}";
-
+        //逻辑类命名
+        $namespaceArray = explode($this->DS, $this->logicFilename);
+        $this->logicName = array_pop($namespaceArray);
+        $namespaceSuffix = implode('\\', $namespaceArray);
+        $this->logicNamespace = empty($namespaceSuffix) ? "app\admin\logic" : "app\admin\logic\\{$namespaceSuffix}";
         // 主表模型命名
         $modelArray = explode($this->DS, $this->modelFilename);
 
@@ -611,7 +625,6 @@ class BuildCurd
             if (in_array($key, ['describe', 'content', 'details'])) {
                 $this->editorFields[] = $key;
             }
-
         }
         return $this;
     }
@@ -633,7 +646,6 @@ class BuildCurd
      */
     protected function buildColum(&$colum)
     {
-
         $string = $colum['comment'];
 
         // 处理定义类型
@@ -686,7 +698,8 @@ class BuildCurd
             $this->getTemplate("controller{$this->DS}select"),
             [
                 'name' => $name,
-            ]);
+            ]
+        );
         return $selectCode;
     }
 
@@ -710,7 +723,8 @@ class BuildCurd
             [
                 'name'   => $name,
                 'values' => $values,
-            ]);
+            ]
+        );
         return $selectCode;
     }
 
@@ -731,7 +745,8 @@ class BuildCurd
                 'name'     => $name,
                 'relation' => $relation,
                 'values'   => $filed,
-            ]);
+            ]
+        );
         return $selectCode;
     }
 
@@ -750,7 +765,8 @@ class BuildCurd
             [
                 'name'   => $name,
                 'select' => $select,
-            ]);
+            ]
+        );
         return $optionCode;
     }
 
@@ -770,7 +786,8 @@ class BuildCurd
                 'field'  => $field,
                 'name'   => $name,
                 'select' => $select,
-            ]);
+            ]
+        );
         return $optionCode;
     }
 
@@ -790,7 +807,8 @@ class BuildCurd
                 'field'  => $field,
                 'name'   => $name,
                 'select' => $select,
-            ]);
+            ]
+        );
         return $optionCode;
     }
 
@@ -803,7 +821,10 @@ class BuildCurd
 
         // 初始化数据
         $this->renderData();
-
+        
+        //逻辑
+        $this->renderLogic();
+        
         // 控制器
         $this->renderController();
 
@@ -963,7 +984,29 @@ class BuildCurd
         }
 
         return $this;
+    }
+    /**
+     * 初始化逻辑
+     *
+     * @return void
+     */
+    public function renderLogic()
+    {
+        $logicFile = "{$this->rootDir}app{$this->DS}admin{$this->DS}logic{$this->DS}{$this->logicFilename}.php";
 
+        $modelFilenameExtend = str_replace($this->DS, '\\', $this->modelFilename);
+
+        $logicValue = CommonTool::replaceTemplate(
+            $this->getTemplate("logic{$this->DS}logic"),
+            [
+                'logicName'       => $this->logicName,
+                'logicNamespace'  => $this->logicNamespace,
+                'modelClass'        => "\app\common\model\\{$modelFilenameExtend}::class",
+                
+            ]
+        );
+        $this->fileList[$logicFile] = $logicValue;
+        return $this;
     }
 
     /**
@@ -985,7 +1028,8 @@ class BuildCurd
                 $this->getTemplate("controller{$this->DS}indexMethod"),
                 [
                     'relationIndexMethod' => $relationCode,
-                ]);
+                ]
+            );
         }
         $selectList = '';
         foreach ($this->relationArray as $relation) {
@@ -1000,7 +1044,8 @@ class BuildCurd
             }
         }
 
-        $modelFilenameExtend = str_replace($this->DS,'\\',$this->modelFilename);
+        $modelFilenameExtend = str_replace($this->DS, '\\', $this->modelFilename);
+        $logicFilenameExtend = str_replace($this->DS, '\\', $this->logicFilename);
 
         $controllerValue = CommonTool::replaceTemplate(
             $this->getTemplate("controller{$this->DS}controller"),
@@ -1008,10 +1053,12 @@ class BuildCurd
                 'controllerName'       => $this->controllerName,
                 'controllerNamespace'  => $this->controllerNamespace,
                 'controllerAnnotation' => $this->tableComment,
-                'modelFilename'        => "\app\admin\model\\{$modelFilenameExtend}",
+                'modelFilename'        => "\app\common\model\\{$modelFilenameExtend}",
+                'logicFilename'        => "\app\admin\logic\\{$logicFilenameExtend}",
                 'indexMethod'          => $controllerIndexMethod,
                 'selectList'           => $selectList,
-            ]);
+            ]
+        );
         $this->fileList[$controllerFile] = $controllerValue;
         return $this;
     }
@@ -1023,7 +1070,7 @@ class BuildCurd
     protected function renderModel()
     {
         // 主表模型
-        $modelFile = "{$this->rootDir}app{$this->DS}admin{$this->DS}model{$this->DS}{$this->modelFilename}.php";
+        $modelFile = "{$this->rootDir}app{$this->DS}common{$this->DS}model{$this->DS}{$this->modelFilename}.php";
         if (empty($this->relationArray)) {
             $relationList = '';
         } else {
@@ -1034,10 +1081,11 @@ class BuildCurd
                     $this->getTemplate("model{$this->DS}relation"),
                     [
                         'relationMethod' => $relation,
-                        'relationModel'  => "\app\admin\model\\{$val['modelFilename']}",
+                        'relationModel'  => "\app\common\model\\{$val['modelFilename']}",
                         'foreignKey'     => $val['foreignKey'],
                         'primaryKey'     => $val['primaryKey'],
-                    ]);
+                    ]
+                );
                 $relationList .= $relationCode;
             }
         }
@@ -1065,20 +1113,21 @@ class BuildCurd
             $this->getTemplate("model{$this->DS}model"),
             [
                 'modelName'      => $this->modelName,
-                'modelNamespace' => "app\admin\model{$extendNamespace}",
+                'modelNamespace' => "app\common\model{$extendNamespace}",
                 'table'          => $this->table,
                 'deleteTime'     => $this->delete ? '"delete_time"' : 'false',
                 'relationList'   => $relationList,
                 'selectList'     => $selectList,
-            ]);
+            ]
+        );
         $this->fileList[$modelFile] = $modelValue;
 
         // 关联模型
         foreach ($this->relationArray as $key => $val) {
-            $relationModelFile = "{$this->rootDir}app{$this->DS}admin{$this->DS}model{$this->DS}{$val['modelFilename']}.php";
+            $relationModelFile = "{$this->rootDir}app{$this->DS}common{$this->DS}model{$this->DS}{$val['modelFilename']}.php";
 
             // todo 判断关联模型文件是否存在, 存在就不重新生成文件, 防止关联模型文件被覆盖
-            $relationModelClass = "\\app\\admin\\model\\{$val['modelFilename']}";
+            $relationModelClass = "\\app\\common\\model\\{$val['modelFilename']}";
             if (class_exists($relationModelClass) && method_exists(new $relationModelClass, 'getName')) {
                 $tableName = (new $relationModelClass)->getName();
                 if (CommonTool::humpToLine(lcfirst($tableName)) == CommonTool::humpToLine(lcfirst($key))) {
@@ -1097,12 +1146,13 @@ class BuildCurd
                 $this->getTemplate("model{$this->DS}model"),
                 [
                     'modelName'      => $val['modelName'],
-                    'modelNamespace' => "app\admin\model{$extendNamespace}",
+                    'modelNamespace' => "app\common\model{$extendNamespace}",
                     'table'          => $key,
                     'deleteTime'     => $val['delete'] ? '"delete_time"' : 'false',
                     'relationList'   => '',
                     'selectList'     => '',
-                ]);
+                ]
+            );
             $this->fileList[$relationModelFile] = $relationModelValue;
         }
         return $this;
@@ -1115,19 +1165,19 @@ class BuildCurd
     protected function renderView()
     {
         // 列表页面
-        $viewIndexFile = "{$this->rootDir}app{$this->DS}admin{$this->DS}view{$this->DS}{$this->viewFilename}{$this->DS}index.html";
+        $viewIndexFile = "{$this->rootDir}view{$this->DS}admin{$this->DS}{$this->viewFilename}{$this->DS}index.html";
         $viewIndexValue = CommonTool::replaceTemplate(
             $this->getTemplate("view{$this->DS}index"),
             [
                 'controllerUrl' => $this->controllerUrl,
-            ]);
+            ]
+        );
         $this->fileList[$viewIndexFile] = $viewIndexValue;
 
         // 添加页面
         $viewAddFile = "{$this->rootDir}app{$this->DS}admin{$this->DS}view{$this->DS}{$this->viewFilename}{$this->DS}add.html";
         $addFormList = '';
         foreach ($this->tableColumns as $field => $val) {
-
             if (in_array($field, ['id', 'create_time'])) {
                 continue;
             }
@@ -1187,13 +1237,15 @@ class BuildCurd
                     'required' => $this->buildRequiredHtml($val['required']),
                     'value'    => $val['default'],
                     'define'   => $define,
-                ]);
+                ]
+            );
         }
         $viewAddValue = CommonTool::replaceTemplate(
             $this->getTemplate("view{$this->DS}form"),
             [
                 'formList' => $addFormList,
-            ]);
+            ]
+        );
         $this->fileList[$viewAddFile] = $viewAddValue;
 
 
@@ -1201,7 +1253,6 @@ class BuildCurd
         $viewEditFile = "{$this->rootDir}app{$this->DS}admin{$this->DS}view{$this->DS}{$this->viewFilename}{$this->DS}edit.html";
         $editFormList = '';
         foreach ($this->tableColumns as $field => $val) {
-
             if (in_array($field, ['id', 'create_time'])) {
                 continue;
             }
@@ -1263,13 +1314,15 @@ class BuildCurd
                     'required' => $this->buildRequiredHtml($val['required']),
                     'value'    => $value,
                     'define'   => $define,
-                ]);
+                ]
+            );
         }
         $viewEditValue = CommonTool::replaceTemplate(
             $this->getTemplate("view{$this->DS}form"),
             [
                 'formList' => $editFormList,
-            ]);
+            ]
+        );
         $this->fileList[$viewEditFile] = $viewEditValue;
 
         return $this;
@@ -1287,7 +1340,6 @@ class BuildCurd
 
         // 主表字段
         foreach ($this->tableColumns as $field => $val) {
-
             if ($val['formType'] == 'image') {
                 $templateValue = "{field: '{$field}', title: '{$val['comment']}', templet: ea.table.image}";
             } elseif ($val['formType'] == 'images') {
@@ -1360,7 +1412,8 @@ class BuildCurd
             [
                 'controllerUrl' => $this->controllerUrl,
                 'indexCols'     => $indexCols,
-            ]);
+            ]
+        );
         $this->fileList[$jsFile] = $jsValue;
         return $this;
     }
@@ -1457,5 +1510,4 @@ class BuildCurd
     {
         return file_get_contents("{$this->dir}{$this->DS}templates{$this->DS}{$name}.code");
     }
-
 }

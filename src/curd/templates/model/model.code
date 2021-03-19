@@ -2,9 +2,9 @@
 
 namespace {{modelNamespace}};
 
-use app\common\model\TimeModel;
+use app\common\model\BaseModel;
 
-class {{modelName}} extends TimeModel
+class {{modelName}} extends BaseModel
 {
 
     protected $name = "{{table}}";

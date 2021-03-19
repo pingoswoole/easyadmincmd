@@ -1,5 +1,5 @@
 
     public function {{name}}()
     {
-        return \app\admin\model\{{relation}}::column('{{values}}', 'id');
+        return \app\common\model\{{relation}}::column('{{values}}', 'id');
     }
