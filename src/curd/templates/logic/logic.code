@@ -3,7 +3,17 @@
 namespace {{logicNamespace}};
 
 use app\admin\base\BaseLogic;
-use think\App;
+
+use EasyAdminCmd\tool\CommonTool;
+use think\facade\Db;
+use think\facade\Env;
+use think\Model;
+
+use \PhpOffice\PhpSpreadsheet\IOFactory;
+use \PhpOffice\PhpSpreadsheet\Spreadsheet;
+use \PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use \PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+
 
 /**
  *  {{logicName}}
@@ -192,7 +202,7 @@ class {{logicName}} extends BaseLogic
         }
         return [];
     }
-    
+
     /**
      * 属性修改
      *

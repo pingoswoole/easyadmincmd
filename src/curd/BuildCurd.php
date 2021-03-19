@@ -1175,7 +1175,7 @@ class BuildCurd
         $this->fileList[$viewIndexFile] = $viewIndexValue;
 
         // 添加页面
-        $viewAddFile = "{$this->rootDir}app{$this->DS}admin{$this->DS}view{$this->DS}{$this->viewFilename}{$this->DS}add.html";
+        $viewAddFile = "{$this->rootDir}view{$this->DS}admin{$this->DS}{$this->viewFilename}{$this->DS}add.html";
         $addFormList = '';
         foreach ($this->tableColumns as $field => $val) {
             if (in_array($field, ['id', 'create_time'])) {
@@ -1250,7 +1250,7 @@ class BuildCurd
 
 
         // 编辑页面
-        $viewEditFile = "{$this->rootDir}app{$this->DS}admin{$this->DS}view{$this->DS}{$this->viewFilename}{$this->DS}edit.html";
+        $viewEditFile = "{$this->rootDir}view{$this->DS}admin{$this->DS}{$this->viewFilename}{$this->DS}edit.html";
         $editFormList = '';
         foreach ($this->tableColumns as $field => $val) {
             if (in_array($field, ['id', 'create_time'])) {
